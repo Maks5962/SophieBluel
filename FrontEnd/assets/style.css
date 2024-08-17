@@ -30,6 +30,7 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
+	background: #FFFEF8;
 }
 ol, ul {
 	list-style: none;
@@ -95,8 +96,12 @@ nav li {
 	font-size: 1.2em;
 }
 
-li:hover {
+.liens-menu:hover {
 	color: #B1663C;
+}
+.liens-menu {
+	color: black;
+	text-decoration: none;
 }
 #introduction {
 	display: flex;
@@ -140,6 +145,13 @@ li:hover {
 #contact {
 	width: 50%;
 margin: auto;
+}
+#contact > * {
+	text-align: center;
+
+}
+#contact h2{
+	margin-bottom: 20px;
 }
 #contact > * {
 	text-align: center;
@@ -201,11 +213,50 @@ footer nav ul {
 	font-size: 16px;
 	font-weight: 700;
 	font-family: 'Syne', sans-serif;
-	background-color: #FFF;
+	background-color: #FFFEF8;
 	cursor: pointer;
 }
 
 .btn-filtre.active {
-	color:#FFF;
+	color:#FFFEF8;
 	background-color: #1d6154;
+}
+#connexion {
+	width: 380px;
+	margin: auto;
+}
+#connexion > * {
+	text-align: center;
+
+}
+#connexion h2{
+	margin-bottom: 20px;
+}
+#connexion > * {
+	text-align: center;
+}
+#connexion h2{
+	margin-bottom: 20px;
+}
+#connexion form {
+	text-align: left;
+	margin-top:30px;
+	display: flex;
+	flex-direction: column;
+}
+
+#connexion input {
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+#connexion label {
+	margin: 2em 0 1em 0;
+}
+#connexion p a {
+	color: black;
+}
+#connexion p a:hover {
+	color: #B1663C;
 }
