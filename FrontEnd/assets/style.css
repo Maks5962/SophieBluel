@@ -260,3 +260,14 @@ footer nav ul {
 #connexion p a:hover {
 	color: #B1663C;
 }
+.erreur {
+	background-color: pink;
+	color: red;
+	height: 3em;
+	margin: 30px auto;
+	border: 1px dashed red;
+	border-radius: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
