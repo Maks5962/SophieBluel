@@ -2,6 +2,12 @@
 email: sophie.bluel@test.tld
 password: S0phie 
 */
+// Vérifier si la connexion est active
+if (localStorage.getItem("authToken")) { // A cette étape il faudrait vérifier si le token est authentique
+    // Déconnexion par suppression du localStorage
+    localStorage.removeItem("authToken")
+
+}
 
 // Récupérer les données du formulaire
 document.getElementById("formulaireConnexion").addEventListener("submit", function(event) {
@@ -36,8 +42,9 @@ document.getElementById("formulaireConnexion").addEventListener("submit", functi
         // Ajout de la réponse dans le localStorage pour maintenir la session
         const token = data.token;
         // Stocker le token dans le localStorage
-        localStorage.setItem('authToken', token);
-        console.log("Utilisateur connecté")
+        localStorage.setItem("authToken", token);
+        // Redirection vers la page d'accueil
+        window.location.href = "index.html";
     })
     .catch(error => {
         // Afficher l'erreur sur le DOM

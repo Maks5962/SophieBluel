@@ -9,16 +9,28 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
-	<script src="scripts.js"></script>
+	<script src="scripts.js" defer></script>
 </head>
 <body>
+	<!-- Structure de la modale -->
+    <div id="modale" class="modale">
+        <div class="modale-contenu">
+			<div class="navigation-modale">
+				<img src="assets/icons/arrow-left.svg" alt="Précédente" class="img-modale-precedente">
+				<img src="assets/icons/xmark.svg" alt="Fermer" id="fermerModale" class="img-modale-fermer">
+			</div>
+            <h2>Galerie photo</h2>
+            <p>afficher le contenu de la galerie</p>
+        </div>
+    </div>
+
 <header>
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
 		<ul>
 			<li class="liens-menu"><a href="index.html" title="Liste des projets" class="liens-menu">projets</a></li>
 			<li class="liens-menu">contact</li>
-			<li class="liens-menu"><a href="login.html" title="Connexion à l'espace utilisateur" class="liens-menu">login</a></li>
+			<li class="liens-menu"><a href="login.html" title="Connexion à l'espace utilisateur" class="liens-menu" id="loginOut">login</a></li>
 			<li class="liens-menu"><img src="./assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
 	</nav>

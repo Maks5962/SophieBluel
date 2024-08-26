@@ -1,3 +1,59 @@
+// Vérifier si la connexion est active
+if (localStorage.getItem("authToken")) { // A cette étape il faudrait vérifier si le token est authentique
+    // Remplacer le texte sur la page
+    document.getElementById("loginOut").innerText = "logout";
+
+    // Ajout du bandeau d'administration
+    /*
+    <div class="bandeau-admin">
+		<a href="#"><img src="assets/icons/edition.svg" alt="icon mode édition">Mode édition</a>
+	</div>
+    */
+   // Création des éléments
+   const bandeauAdmin = document.createElement("div")
+   bandeauAdmin.className = "bandeau-admin"
+
+   const modeEdition = document.createElement("a")
+   modeEdition.href = "#"
+   modeEdition.id = "ouvrirModale"
+
+   const iconEdition = document.createElement("img")
+   iconEdition.src = "assets/icons/edition.svg"
+   iconEdition.alt = "icone mode édition"
+
+   modeEdition.appendChild(iconEdition)
+   modeEdition.appendChild(document.createTextNode("Mode édition"))
+   bandeauAdmin.appendChild(modeEdition)
+
+   document.body.insertBefore(bandeauAdmin, document.body.firstChild)
+
+   // Création de la modale
+
+
+    // Sélectionner les éléments du DOM
+    const modale = document.getElementById("modale")
+    const ouvrirModale = document.getElementById("ouvrirModale")
+    const fermerModale = document.getElementById("fermerModale")
+
+    // Lorsque l'utilisateur clique sur le bouton, ouvrir la modale
+    ouvrirModale.onclick = function() {
+        modale.style.display = "block";
+    }
+
+    // Lorsque l'utilisateur clique sur (x), fermer la modale
+    fermerModale.onclick = function() {
+        modale.style.display = "none";
+    }
+
+    // Lorsque l'utilisateur clique en dehors de la modale, fermer la modale
+    window.onclick = function(event) {
+        if (event.target == modale) {
+            modale.style.display = "none";
+        }
+    }
+
+}
+
 // Fonction appel API "fetch" http://localhost:5678/api/works
 async function fetchDonnees () {
     const reponse = await fetch("http://localhost:5678/api/works")
