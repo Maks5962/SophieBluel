@@ -1,80 +1,85 @@
-// Vérifier si la connexion est active
+// Les imports
+import { creationModale, listeProjetsModale, ouvertureFermetureModale } from "./modale.js";
+
+
+/* Fonction appel API "fetch" http://localhost:5678/api/works */
+
+let donneesAPI = null // Variable pour stocker les résultats de l'API
+async function fetchDonnees () {
+    const reponse = await fetch("http://localhost:5678/api/works")
+    if(reponse.ok === true) {
+        donneesAPI = await reponse.json()
+        return donneesAPI
+    }
+    throw new Error("Impossible de contacter le serveur.")
+}
+
+
+
+/* Vérifier si la connexion est active
+Ajout du bandeau d'administration sur la page d'accueil,
+Modification du lien "login" en "logout",
+Ajout du bouton "modifier",
+Suppression des boutons filtres */
+
 if (localStorage.getItem("authToken")) { // A cette étape il faudrait vérifier si le token est authentique
+    
     // Remplacer le texte sur la page
     document.getElementById("loginOut").innerText = "logout";
 
     // Ajout du bandeau d'administration
     /*
     <div class="bandeau-admin">
-		<a href="#"><img src="assets/icons/edition.svg" alt="icon mode édition">Mode édition</a>
+		<img src="assets/icons/edition.svg" alt="icon mode édition">Mode édition
 	</div>
     */
    // Création des éléments
    const bandeauAdmin = document.createElement("div")
    bandeauAdmin.className = "bandeau-admin"
 
-   const modeEdition = document.createElement("a")
-   modeEdition.href = "#"
-   modeEdition.id = "ouvrirModale"
+   const iconModeEdition = document.createElement("img")
+   iconModeEdition.src = "assets/icons/edition.svg"
+   iconModeEdition.alt = "icone mode édition"
+
+   const textEdition = document.createTextNode("Mode édition")
+
+   bandeauAdmin.appendChild(iconModeEdition)
+   bandeauAdmin.appendChild(textEdition)
+
+   document.body.insertBefore(bandeauAdmin, document.body.firstChild)
+
+   // Ajout du lien modifier a coté de "Mes Projets"
+   const h2Titre = document.getElementById("mes-projets")
+
+   const lienModifier = document.createElement("a")
+   lienModifier.href = "#"
+   lienModifier.id = "ouvrirModale"
+   lienModifier.innerText = "modifier"
 
    const iconEdition = document.createElement("img")
    iconEdition.src = "assets/icons/edition.svg"
    iconEdition.alt = "icone mode édition"
 
-   modeEdition.appendChild(iconEdition)
-   modeEdition.appendChild(document.createTextNode("Mode édition"))
-   bandeauAdmin.appendChild(modeEdition)
+   lienModifier.prepend(iconEdition) // Ajouter l'icone juste avant le texte "modifier"
 
-   document.body.insertBefore(bandeauAdmin, document.body.firstChild)
-
-   // Création de la modale
-
-
-    // Sélectionner les éléments du DOM
-    const modale = document.getElementById("modale")
-    const ouvrirModale = document.getElementById("ouvrirModale")
-    const fermerModale = document.getElementById("fermerModale")
-
-    // Lorsque l'utilisateur clique sur le bouton, ouvrir la modale
-    ouvrirModale.onclick = function() {
-        modale.style.display = "block";
-    }
-
-    // Lorsque l'utilisateur clique sur (x), fermer la modale
-    fermerModale.onclick = function() {
-        modale.style.display = "none";
-    }
-
-    // Lorsque l'utilisateur clique en dehors de la modale, fermer la modale
-    window.onclick = function(event) {
-        if (event.target == modale) {
-            modale.style.display = "none";
-        }
-    }
+   h2Titre.appendChild(lienModifier)
 
 }
 
-// Fonction appel API "fetch" http://localhost:5678/api/works
-async function fetchDonnees () {
-    const reponse = await fetch("http://localhost:5678/api/works")
-    if(reponse.ok === true) {
-        return reponse.json()
-    }
-    throw new Error("Impossible de contacter le serveur.")
-}
+
 
 // Création des variables nécessaires dans plusieurs fonction 
 let filtreFinal = "Tous" // Pour vérifier la présence de  filtre plus tard filtre "Tous" par défaut
 // Afficher filtres 
-async function afficherFiltres (data) {
-    let dataFiltrees = data // Initialise les données filtrées sans filtre
+async function afficherFiltres (donneesAPI) {
+    let dataFiltrees = donneesAPI // Initialise les données filtrées sans filtre
 
     // Détermine le nombre de bouton filtre à afficher    
-    const nbProjet = data.length
+    const nbProjet = donneesAPI.length
 
     const tableauFiltres = ["Tous"]
     for (let i=0; i<nbProjet; i++) {
-        const nomFiltre = data[i].category["name"]
+        const nomFiltre = donneesAPI[i].category["name"]
 
         if(tableauFiltres.indexOf(nomFiltre) === -1) { //Vérifie si le nom du Filtre est existant dans le tableau
             tableauFiltres.push(nomFiltre)
@@ -126,10 +131,10 @@ async function afficherFiltres (data) {
         // Si filtreFinal !== Tous alors le filtre est appliqué sinon dataFiltrees === data
         
         if(filtreFinal !== "Tous") {
-            dataFiltrees = data.filter(filtre => filtre.category.name === filtreFinal)
+            dataFiltrees = donneesAPI.filter(filtre => filtre.category.name === filtreFinal)
         } 
         else { // Else nécessaire dans le cas d'un nouveau clic sur "Tous"
-            dataFiltrees = data
+            dataFiltrees = donneesAPI
         }
 
         afficherPortfolio(dataFiltrees)
@@ -137,12 +142,12 @@ async function afficherFiltres (data) {
         })
     })
         
-    afficherPortfolio(data)
+    afficherPortfolio(donneesAPI)
 }
 
 // Fonction afficher les projets
-async function afficherPortfolio (data) {   
-    const nbProjet = data.length
+async function afficherPortfolio (donneesAPI) {   
+    const nbProjet = donneesAPI.length
 
     //Vérification de l'existance de la div Gallery pour la vider dans le cas d'un filtre a appliquer
     const existanceGallery = document.querySelector(".gallery")
@@ -161,8 +166,8 @@ async function afficherPortfolio (data) {
     // Boucle pour afficher les projets avec ou sans filtre
     for(let i = 0; i < nbProjet ; i++) {
         //Création des variables de données
-        const title = data[i].title
-        const imageUrl = data[i].imageUrl 
+        const title = donneesAPI[i].title
+        const imageUrl = donneesAPI[i].imageUrl 
 
         //Récupère le parent dans le DOM
         const divGallery = document.querySelector(".gallery")
@@ -170,6 +175,7 @@ async function afficherPortfolio (data) {
         
         //Création des balises
         const figure = document.createElement("figure")
+        figure.dataset.idProjet = donneesAPI[i].id
         const image = document.createElement("img")
         const figcaption = document.createElement("figcaption")
 
@@ -186,10 +192,27 @@ async function afficherPortfolio (data) {
 }
 
 
-// Lance l'appel API, une fois les données reçues appel de fonction afficherFiltres
-// Les projets seront affichés depuis la fonction afficherFiltres
-fetchDonnees().then(data => {
-    afficherFiltres(data)
+
+
+/* Lance l'appel API, 
+une fois les données reçues, appel des différentes fonctions */
+
+fetchDonnees().then( () => {
+    
+    /* Si l'utilisateur est connecté, je lance les appels API */
+
+    if(localStorage.getItem("authToken")) {
+
+        afficherPortfolio(donneesAPI) /* Afficher le portfolio sans filtre */        
+        creationModale() /* Création de la modale */        
+        listeProjetsModale(donneesAPI) /* Liste les projets existants dans la modale */        
+        ouvertureFermetureModale() /* Ouverture et fermeture de la modale */
+
+    }
+    else { /* Si l'utilisateur n'est pas connecté */
+
+        afficherFiltres(donneesAPI)  /* Affiche le portfolio complet */
+    
+    }
+
 })
-
-

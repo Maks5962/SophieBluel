@@ -1,0 +1,40 @@
+<div id="modale" class="modale">
+    <div class="popup">
+        <div class="navigation-modale">
+            <img src="assets/icons/arrow-left.svg" alt="Précédente" class="icone-precedente">
+            <img src="assets/icons/xmark.svg" alt="Fermer" id="fermerModale" class="icone-fermer">
+        </div>
+        <div class=contenu-modale>
+            <h2 class="titre-modale">Ajout photo</h2>
+            <div class="galerie-modale">
+                <div class="galerie-grid">
+                    <img src="http://localhost:5678/images/abajour-tahina1651286843956.png" class="img-galerie-grid">
+                    <img src="http://127.0.0.1:5500/FrontEnd/assets/icons/poubelle.svg" class="icone-supprimer">
+                </div>					
+            </div>
+            <div class="upload-modale">
+                <form>
+                    <div class="ajout-fichier">
+                        <img src="assets/icons/picture.svg" alt="ajouter une photo">
+                        <label for="file" class="btn-ajouterFichier">+ Ajouter photo</label>
+                        <input type="file" id="file" name="file" class="masque-fichier" accept=".jpg, .jpeg, .png" required>
+                        <p>jpg, png : 4mo max</p>
+                    </div>
+                    
+                    <label for="title">Titre :</label>
+                    <input type="text" id="title" name="title" required>
+        
+                    <label for="categorie">Catégorie :</label>
+                    <select id="categorie" name="categorie" required>
+                        <option value=""></option>
+                        <option value="cat1">Catégorie 1</option>
+                        <option value="cat2">Catégorie 2</option>
+                        <option value="cat3">Catégorie 3</option>
+                    </select>
+                </form>
+            </div>
+            <hr class="separateur-modale">
+            <button class="btn-modale">Ajouter une photo</button>
+        </div>
+    </div>
+</div>

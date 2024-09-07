@@ -274,7 +274,8 @@ footer nav ul {
 
 .bandeau-admin {
 	width: 100vw;
-	position: relative;
+	position: sticky;
+	top: 0;
 	margin-left: calc(-50vw + 50%); /* centrer le bandeau sur le page */
 	height: 60px;
 	background-color: black;
@@ -284,19 +285,26 @@ footer nav ul {
 	align-items: center;
 }
 
-.bandeau-admin a {
-	color: white;
-	text-decoration: none;
-	font-family: "work sans";
-	font-size: 16px;
-	font-weight: 400;
-}
-
 .bandeau-admin img {
 	height: 16px;
 	width: 16px;
 	margin-right: 10px;
 	vertical-align: top;
+}
+
+#mes-projets a {
+	display: inline-block;
+	margin-left: 30px;
+	color: black;
+	font-size: 14px;
+	font-weight: 400;
+	text-decoration: none;
+	font-family: "work sans";
+}
+
+#mes-projets a img {
+	filter: brightness(0) saturate(100%); /* Redéfinir en noir l'icone */
+	margin-right: 5px;
 }
 
 .modale {
@@ -312,35 +320,178 @@ footer nav ul {
 }
 
 /* Contenu de la modale */
-.modale-contenu {
+.popup {
     background-color: #FFFEF8;
     margin: 15% auto; /* Centré verticalement avec un peu d'espace en haut */
     padding: 20px 30px;
 	border-radius: 10px;
-    width: 80%; 
-    max-width: 600px; 
-}
-
-.modale-contenu h2 {
-	text-align: center;
-	font-family: "work sans";
-	font-size: 26px;
-	font-weight: 400;
-	color: black;
+	width: 80%;
+	max-width: 640px;
 }
 
 .navigation-modale {
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-end ; /* A changer en space-between lors de l'affichage de la fleche précédente (en javascript) */
 }
 
-.img-modale-precedente {
+.icone-precedente {
+	display: none; /* A changer en block lors de l'affichage de la fleche précédente (en javascript) */
 	height: 21px;
 	width: 21px;
+	cursor: pointer;
 }
 
-.img-modale-fermer {
+.icone-fermer {
 	height: 24px;
 	width: 24px;
+	cursor: pointer;
+}
+
+.contenu-modale {
+	display: flex;
+	flex-direction: column;
+	margin: 0 110px;
+	width: 420px;
+}
+
+.titre-modale {
+	font-family: "work sans";
+	font-weight: 400;
+	font-size: 26px;
+	color: black;
+	margin: 10px 0;
+	text-align: center;
+}
+
+.separateur-modale {
+	color: #b3b3b3;
+	width: 100%;
+}
+
+.btn-modale {
+	margin: 38px auto 45px auto;
+	font-family: "Syne";
+	font-weight: 700;
+	font-size: 14px;
+	color: white;
+	background-color: #1D6154; /* #A7A7A7 lorsqu'il est désactivé */
+	text-align: center;
+	border-radius: 60px ;
+	border: none;
+	padding: 10px 50px;
+	width: 240px;
+}
+
+.btn-modale:hover {
+	cursor: pointer; /* a modifier quand le bouton est désactivé */
+}
+
+.galerie-modale {
+	margin: 35px 0;
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	column-gap: 10px;
+	row-gap: 30px;
+	width: 420px;
+}
+
+.galerie-grid {
+	position: relative;
+}
+
+.img-galerie-grid {
+	width: 100%;
+}
+
+.icone-supprimer {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	height: 17px;
+	width: 17px;
+	background-color: black;
+}
+
+.icone-supprimer:hover {
+	cursor: pointer;
+}
+
+.upload-modale {
+	margin: 35px 0;
+}
+
+.upload-modale form {
+	text-align: left;
+	margin-top:30px;
+	display: flex;
+	flex-direction: column;
+}
+
+.upload-modale input {
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+
+.upload-modale select {
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+
+.upload-modale label {
+	margin: 2em 0 1em 0;
+}
+
+.upload-modale .type-fichier {
+	background-color: #E8F1F6;
+	box-shadow: none;
+	height: 170px;
+	width: 100%;
+	border-radius: 3px;
+}
+
+.ajout-fichier {
+	height: 170px;
+	width: 100%;
+	background-color: #e8f1f6;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	border-radius: 3px;
+}
+
+.ajout-fichier img {
+	margin-top: 13px;
+	height: 76px;
+	width: 76px;
+}
+
+.ajout-fichier p {
+	font-size: 10px;
+	font-weight: 400;
+	color: #444444;
+	margin-bottom: 19px;
+}
+
+.masque-fichier {
+	display: none;
+}
+
+label.btn-ajouterFichier {
+	background-color: #CBD6DC;
+	padding: 10px 33px;
+	border-radius: 50px;
+	color: #306685;
+	font-size: 14px;
+	font-weight: 500;
+	font-family: "work sans";
+	margin: 7px 0;
+}
+
+.btn-ajouterFichier:hover {
 	cursor: pointer;
 }
