@@ -13,7 +13,7 @@ export function creationModale () {
 				<img src="assets/icons/xmark.svg" alt="Fermer" id="fermerModale" class="icone-fermer">
 			</div>
 			<div class=contenu-modale>
-                <h2 class="titre-modale">Ajout photo</h2>
+                <h2 class="titre-modale">Galerie photo</h2>
 				
 				<hr class="separateur-modale">
 				<button class="btn-modale">Ajouter une photo</button>
