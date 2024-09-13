@@ -12,6 +12,47 @@
 	<script src="scripts.js" type="module" defer></script>
 </head>
 <body>
+<aside id="modale" class="modale">
+	<div class="popup">
+		<div class="navigation-modale">
+			<img src="assets/icons/arrow-left.svg" alt="Précédente" class="icone-precedente">
+			<img src="assets/icons/xmark.svg" alt="Fermer" id="fermerModale" class="icone-fermer">
+		</div>
+		<div class="contenu-modale-suppression">
+			<h2 class="titre-modale">Galerie photo</h2>
+			
+			<hr class="separateur-modale">
+			<button class="btn-modale" id="btn-ajouter-modale">Ajouter une photo</button>
+		</div>
+		<div class="contenu-modale-ajout">
+            <h2 class="titre-modale">Ajout photo</h2>
+            <div class="upload-modale">
+                <form id="formulaire-ajout" enctype="multipart/form-data">
+                    <div class="ajout-fichier">
+						<div class="upload">
+							<img src="assets/icons/picture.svg" alt="ajouter une photo" class="logo-upload">
+							<label for="file" class="btn-ajouterFichier">+ Ajouter photo</label>
+							<input type="file" id="file" name="file" class="masque-fichier" accept=".jpg, .jpeg, .png" required>
+							<p>jpg, png : 4mo max</p>
+						</div>
+                    </div>
+                    
+                    <label for="title">Titre :</label>
+                    <input type="text" id="title" name="title" required>
+        
+                    <label for="categorie">Catégorie :</label>
+                    <select id="categorie" name="categorie" required>
+                    </select>
+					<hr class="separateur-modale">
+           			<button class="btn-modale" id="btn-valider-modale" type="submit" disabled>Valider</button>
+                </form>
+				
+            </div>
+            
+        </div>
+	</div>
+</aside>
+
 <header>
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
@@ -23,6 +64,7 @@
 		</ul>
 	</nav>
 </header>
+
 <main>
 	<section id="introduction">
 		<figure>

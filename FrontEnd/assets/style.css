@@ -140,6 +140,8 @@ nav li {
 
 .gallery img {
 	width: 100%;
+	height: 100%;
+	object-fit: cover;
 
 }
 #contact {
@@ -347,8 +349,15 @@ footer nav ul {
 	cursor: pointer;
 }
 
-.contenu-modale {
+.contenu-modale-suppression {
 	display: flex;
+	flex-direction: column;
+	margin: 0 110px 35px 110px;
+	width: 420px;
+}
+
+.contenu-modale-ajout {
+	display: none; /* A changer en display flex lors de l'affichage */
 	flex-direction: column;
 	margin: 0 110px;
 	width: 420px;
@@ -366,10 +375,11 @@ footer nav ul {
 .separateur-modale {
 	color: #b3b3b3;
 	width: 100%;
+	margin: 35px 0;
 }
 
 .btn-modale {
-	margin: 38px auto 45px auto;
+	margin: 0 auto 0 auto;
 	font-family: "Syne";
 	font-weight: 700;
 	font-size: 14px;
@@ -387,7 +397,7 @@ footer nav ul {
 }
 
 .galerie-modale {
-	margin: 35px 0;
+	margin: 35px 0 0 0;
 	display: grid;
 	grid-template-columns: repeat(5, 1fr);
 	column-gap: 10px;
@@ -457,17 +467,36 @@ footer nav ul {
 	height: 170px;
 	width: 100%;
 	background-color: #e8f1f6;
-	display: flex;
+	border-radius: 3px;
+}
+
+.upload {
+	display: flex; /* display none lors de l'apperçu preview */
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	border-radius: 3px;
+	height: 100%;
 }
+
+.preview {
+	display: none; /* display block lors de l'apperçu preview */
+	height: 100%;
+	width: 100%;
+	text-align: center;
+	margin: 0;
+}
+
 
 .ajout-fichier img {
 	margin-top: 13px;
 	height: 76px;
 	width: 76px;
+}
+
+.preview img {
+	margin: 0;
+	height: 100%;
+	width: auto;
 }
 
 .ajout-fichier p {
@@ -494,4 +523,9 @@ label.btn-ajouterFichier {
 
 .btn-ajouterFichier:hover {
 	cursor: pointer;
+}
+
+
+#formulaire-ajout {
+	margin: 0
 }

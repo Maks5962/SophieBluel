@@ -1,10 +1,10 @@
 // Les imports
-import { creationModale, listeProjetsModale, ouvertureFermetureModale } from "./modale.js";
+import { listeProjetsModale, ouvertureFermetureModale } from "./modale.js";
 
 
 /* Fonction appel API "fetch" http://localhost:5678/api/works */
 
-let donneesAPI = null // Variable pour stocker les résultats de l'API
+export let donneesAPI = null // Variable pour stocker les résultats de l'API
 async function fetchDonnees () {
     const reponse = await fetch("http://localhost:5678/api/works")
     if(reponse.ok === true) {
@@ -203,8 +203,7 @@ fetchDonnees().then( () => {
 
     if(localStorage.getItem("authToken")) {
 
-        afficherPortfolio(donneesAPI) /* Afficher le portfolio sans filtre */        
-        creationModale() /* Création de la modale */        
+        afficherPortfolio(donneesAPI) /* Afficher le portfolio sans filtre */               
         listeProjetsModale(donneesAPI) /* Liste les projets existants dans la modale */        
         ouvertureFermetureModale() /* Ouverture et fermeture de la modale */
 
