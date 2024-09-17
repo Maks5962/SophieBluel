@@ -2,15 +2,18 @@
 email: sophie.bluel@test.tld
 password: S0phie 
 */
-// Vérifier si la connexion est active
-if (localStorage.getItem("authToken")) { // A cette étape il faudrait vérifier si le token est authentique
+
+/* Vérifier si la connexion est active 
+Si elle est active alors on supprime la session pour la déconnexion */
+if (localStorage.getItem("authToken")) { 
     // Déconnexion par suppression du localStorage
     localStorage.removeItem("authToken")
 
 }
 
-// Récupérer les données du formulaire
-document.getElementById("formulaireConnexion").addEventListener("submit", function(event) {
+/* Traitement de l'envoi du formulaire pour créer la session
+Dans le cas d'une erreur d'identifiant, un message d'info s'affiche sur la page de connexion. */
+document.getElementById("formulaireConnexion").addEventListener("submit", function(event) { // Ecoute du formulaire de connexion
     event.preventDefault(); // Empêche l'envoi réel du formulaire
 
     // Récupération des données du formulaire après envoi
@@ -48,15 +51,10 @@ document.getElementById("formulaireConnexion").addEventListener("submit", functi
     })
     .catch(error => {
         // Afficher l'erreur sur le DOM
-        /*
-        <div class="erreur">
-			Erreur lors de la connexion, veuillez vérifier vos identifiants.
-		</div>
-        */
        const baliseMain = document.querySelector("main")
        const baliseErreur = document.createElement("div")
        baliseErreur.className = "erreur"
        baliseErreur.textContent = "Erreur lors de la connexion, veuillez vérifier vos identifiants."
-       baliseMain.insertAdjacentElement('afterbegin', baliseErreur);
+       baliseMain.insertAdjacentElement('afterbegin', baliseErreur); // Ajout de la balise juste après l'ouverture de la balise main
     })
 })

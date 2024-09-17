@@ -2,8 +2,7 @@
 import { listeProjetsModale, ouvertureFermetureModale } from "./modale.js";
 
 
-/* Fonction appel API "fetch" http://localhost:5678/api/works */
-
+/* Fonction appel API "fetch" http://localhost:5678/api/works pour l'ensemble du projet*/
 export let donneesAPI = null // Variable pour stocker les résultats de l'API
 async function fetchDonnees () {
     const reponse = await fetch("http://localhost:5678/api/works")
@@ -21,56 +20,50 @@ Ajout du bandeau d'administration sur la page d'accueil,
 Modification du lien "login" en "logout",
 Ajout du bouton "modifier",
 Suppression des boutons filtres */
-
 if (localStorage.getItem("authToken")) { // A cette étape il faudrait vérifier si le token est authentique
     
     // Remplacer le texte sur la page
     document.getElementById("loginOut").innerText = "logout";
 
     // Ajout du bandeau d'administration
-    /*
-    <div class="bandeau-admin">
-		<img src="assets/icons/edition.svg" alt="icon mode édition">Mode édition
-	</div>
-    */
-   // Création des éléments
-   const bandeauAdmin = document.createElement("div")
-   bandeauAdmin.className = "bandeau-admin"
+    // Création des éléments
+    const bandeauAdmin = document.createElement("div")
+    bandeauAdmin.className = "bandeau-admin"
 
-   const iconModeEdition = document.createElement("img")
-   iconModeEdition.src = "assets/icons/edition.svg"
-   iconModeEdition.alt = "icone mode édition"
+    const iconModeEdition = document.createElement("img")
+    iconModeEdition.src = "assets/icons/edition.svg"
+    iconModeEdition.alt = "icone mode édition"
 
-   const textEdition = document.createTextNode("Mode édition")
+    const textEdition = document.createTextNode("Mode édition")
 
-   bandeauAdmin.appendChild(iconModeEdition)
-   bandeauAdmin.appendChild(textEdition)
+    bandeauAdmin.appendChild(iconModeEdition)
+    bandeauAdmin.appendChild(textEdition)
 
-   document.body.insertBefore(bandeauAdmin, document.body.firstChild)
+    document.body.insertBefore(bandeauAdmin, document.body.firstChild)
 
-   // Ajout du lien modifier a coté de "Mes Projets"
-   const h2Titre = document.getElementById("mes-projets")
+    // Ajout du lien modifier a coté de "Mes Projets"
+    const h2Titre = document.getElementById("mes-projets")
 
-   const lienModifier = document.createElement("a")
-   lienModifier.href = "#"
-   lienModifier.id = "ouvrirModale"
-   lienModifier.innerText = "modifier"
+    const lienModifier = document.createElement("a")
+    lienModifier.href = "#"
+    lienModifier.id = "ouvrirModale"
+    lienModifier.innerText = "modifier"
 
-   const iconEdition = document.createElement("img")
-   iconEdition.src = "assets/icons/edition.svg"
-   iconEdition.alt = "icone mode édition"
+    const iconEdition = document.createElement("img")
+    iconEdition.src = "assets/icons/edition.svg"
+    iconEdition.alt = "icone mode édition"
 
-   lienModifier.prepend(iconEdition) // Ajouter l'icone juste avant le texte "modifier"
+    lienModifier.prepend(iconEdition) // Ajouter l'icone juste avant le texte "modifier"
 
-   h2Titre.appendChild(lienModifier)
+    h2Titre.appendChild(lienModifier)
 
 }
 
 
 
-// Création des variables nécessaires dans plusieurs fonction 
+
+/* Fonction Afficher filtres permet la création des boutons de filtre sur la page d'accueil / projets */
 let filtreFinal = "Tous" // Pour vérifier la présence de  filtre plus tard filtre "Tous" par défaut
-// Afficher filtres 
 async function afficherFiltres (donneesAPI) {
     let dataFiltrees = donneesAPI // Initialise les données filtrées sans filtre
 
@@ -145,7 +138,9 @@ async function afficherFiltres (donneesAPI) {
     afficherPortfolio(donneesAPI)
 }
 
-// Fonction afficher les projets
+
+
+/* Fonction afficher les projets sans filtre */
 async function afficherPortfolio (donneesAPI) {   
     const nbProjet = donneesAPI.length
 
