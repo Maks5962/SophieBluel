@@ -4,13 +4,19 @@ import { listeProjetsModale, ouvertureFermetureModale } from "./modale.js";
 
 /* Fonction appel API "fetch" http://localhost:5678/api/works pour l'ensemble du projet*/
 export let donneesAPI = null // Variable pour stocker les résultats de l'API
-async function fetchDonnees () {
-    const reponse = await fetch("http://localhost:5678/api/works")
-    if(reponse.ok === true) {
+const fetchDonnees = async () => {
+    try {
+        const reponse = await fetch("http://localhost:5678/api/works")
+        if (!reponse.ok) {
+            throw new Error("Impossible de contacter le serveur")
+
+        }
         donneesAPI = await reponse.json()
         return donneesAPI
+
+    } catch (error) {
+        console.error(error)
     }
-    throw new Error("Impossible de contacter le serveur.")
 }
 
 
@@ -21,7 +27,7 @@ Modification du lien "login" en "logout",
 Ajout du bouton "modifier",
 Suppression des boutons filtres */
 if (localStorage.getItem("authToken")) { // A cette étape il faudrait vérifier si le token est authentique
-    
+
     // Remplacer le texte sur la page
     document.getElementById("loginOut").innerText = "logout";
 
@@ -64,17 +70,17 @@ if (localStorage.getItem("authToken")) { // A cette étape il faudrait vérifier
 
 /* Fonction Afficher filtres permet la création des boutons de filtre sur la page d'accueil / projets */
 let filtreFinal = "Tous" // Pour vérifier la présence de  filtre plus tard filtre "Tous" par défaut
-async function afficherFiltres (donneesAPI) {
+async function afficherFiltres(donneesAPI) {
     let dataFiltrees = donneesAPI // Initialise les données filtrées sans filtre
 
     // Détermine le nombre de bouton filtre à afficher    
     const nbProjet = donneesAPI.length
 
     const tableauFiltres = ["Tous"]
-    for (let i=0; i<nbProjet; i++) {
+    for (let i = 0; i < nbProjet; i++) {
         const nomFiltre = donneesAPI[i].category["name"]
 
-        if(tableauFiltres.indexOf(nomFiltre) === -1) { //Vérifie si le nom du Filtre est existant dans le tableau
+        if (tableauFiltres.indexOf(nomFiltre) === -1) { //Vérifie si le nom du Filtre est existant dans le tableau
             tableauFiltres.push(nomFiltre)
         }
     }
@@ -85,7 +91,7 @@ async function afficherFiltres (donneesAPI) {
     divFiltres.className = "filtres"
     parentDOM.appendChild(divFiltres)
 
-    for(let i=0; i<tableauFiltres.length; i++) {
+    for (let i = 0; i < tableauFiltres.length; i++) {
         // Création des boutons
         const btnFiltre = document.createElement("button")
         btnFiltre.className = "btn-filtre " + tableauFiltres[i]
@@ -93,60 +99,59 @@ async function afficherFiltres (donneesAPI) {
         btnFiltre.innerText = tableauFiltres[i]
 
         divFiltres.appendChild(btnFiltre)
-    }   
-    
+    }
+
 
     // Ecoute du bouton filtre
     document.querySelectorAll(".btn-filtre").forEach((btnFiltre) => {
-    btnFiltre.addEventListener("click", function(event) {
-                
-        // Variable filtre actif 
-        const btnFiltreActif = event.target.id // Renvoi "btn-filtre Tous"
-        // Modifier le bouton filtre actif avec la class active
-        btnFiltre.className = btnFiltreActif + " active"
-        // Boucle sur les autres filtres pour supprimer la class le cas échéant
-        for(let i=0; i<tableauFiltres.length; i++) {
-            if (btnFiltreActif != ("btn-filtre " + tableauFiltres[i]))
-            {
-                document.getElementById("btn-filtre " + tableauFiltres[i]).className = "btn-filtre " + tableauFiltres[i]
-            }
-        }
-                
-                
-        // Boucle pour récupérer le filtre final 
-        for(let c=0; c<tableauFiltres.length; c++) {
-            if(btnFiltreActif === ("btn-filtre " + tableauFiltres[c])) {
-                filtreFinal = tableauFiltres[c]
-            }
-        }
+        btnFiltre.addEventListener("click", function (event) {
 
-        // Création du filtre
-        // Si filtreFinal !== Tous alors le filtre est appliqué sinon dataFiltrees === data
-        
-        if(filtreFinal !== "Tous") {
-            dataFiltrees = donneesAPI.filter(filtre => filtre.category.name === filtreFinal)
-        } 
-        else { // Else nécessaire dans le cas d'un nouveau clic sur "Tous"
-            dataFiltrees = donneesAPI
-        }
+            // Variable filtre actif 
+            const btnFiltreActif = event.target.id // Renvoi "btn-filtre Tous"
+            // Modifier le bouton filtre actif avec la class active
+            btnFiltre.className = btnFiltreActif + " active"
+            // Boucle sur les autres filtres pour supprimer la class le cas échéant
+            for (let i = 0; i < tableauFiltres.length; i++) {
+                if (btnFiltreActif != ("btn-filtre " + tableauFiltres[i])) {
+                    document.getElementById("btn-filtre " + tableauFiltres[i]).className = "btn-filtre " + tableauFiltres[i]
+                }
+            }
 
-        afficherPortfolio(dataFiltrees)
-        
+
+            // Boucle pour récupérer le filtre final 
+            for (let c = 0; c < tableauFiltres.length; c++) {
+                if (btnFiltreActif === ("btn-filtre " + tableauFiltres[c])) {
+                    filtreFinal = tableauFiltres[c]
+                }
+            }
+
+            // Création du filtre
+            // Si filtreFinal !== Tous alors le filtre est appliqué sinon dataFiltrees === data
+
+            if (filtreFinal !== "Tous") {
+                dataFiltrees = donneesAPI.filter(filtre => filtre.category.name === filtreFinal)
+            }
+            else { // Else nécessaire dans le cas d'un nouveau clic sur "Tous"
+                dataFiltrees = donneesAPI
+            }
+
+            afficherPortfolio(dataFiltrees)
+
         })
     })
-        
+
     afficherPortfolio(donneesAPI)
 }
 
 
 
 /* Fonction afficher les projets sans filtre */
-async function afficherPortfolio (donneesAPI) {   
+async function afficherPortfolio(donneesAPI) {
     const nbProjet = donneesAPI.length
 
     //Vérification de l'existance de la div Gallery pour la vider dans le cas d'un filtre a appliquer
     const existanceGallery = document.querySelector(".gallery")
-    if(existanceGallery) {
+    if (existanceGallery) {
         // On vide la gallery
         existanceGallery.innerHTML = ''
     }
@@ -157,17 +162,17 @@ async function afficherPortfolio (donneesAPI) {
         divGallery.className = "gallery"
         parentDOM.appendChild(divGallery)
     }
-    
+
     // Boucle pour afficher les projets avec ou sans filtre
-    for(let i = 0; i < nbProjet ; i++) {
+    for (let i = 0; i < nbProjet; i++) {
         //Création des variables de données
         const title = donneesAPI[i].title
-        const imageUrl = donneesAPI[i].imageUrl 
+        const imageUrl = donneesAPI[i].imageUrl
 
         //Récupère le parent dans le DOM
         const divGallery = document.querySelector(".gallery")
-        
-        
+
+
         //Création des balises
         const figure = document.createElement("figure")
         figure.dataset.idProjet = donneesAPI[i].id
@@ -182,8 +187,8 @@ async function afficherPortfolio (donneesAPI) {
         //Ajout au DOM
         figure.appendChild(image)
         figure.appendChild(figcaption)
-        divGallery.appendChild(figure)            
-    } 
+        divGallery.appendChild(figure)
+    }
 }
 
 
@@ -192,21 +197,21 @@ async function afficherPortfolio (donneesAPI) {
 /* Lance l'appel API, 
 une fois les données reçues, appel des différentes fonctions */
 
-fetchDonnees().then( () => {
-    
+fetchDonnees().then(() => {
+
     /* Si l'utilisateur est connecté, je lance les appels API */
 
-    if(localStorage.getItem("authToken")) {
+    if (localStorage.getItem("authToken")) {
 
-        afficherPortfolio(donneesAPI) /* Afficher le portfolio sans filtre */               
-        listeProjetsModale(donneesAPI) /* Liste les projets existants dans la modale */        
+        afficherPortfolio(donneesAPI) /* Afficher le portfolio sans filtre */
+        listeProjetsModale(donneesAPI) /* Liste les projets existants dans la modale */
         ouvertureFermetureModale() /* Ouverture et fermeture de la modale */
 
     }
     else { /* Si l'utilisateur n'est pas connecté */
 
         afficherFiltres(donneesAPI)  /* Affiche le portfolio complet */
-    
+
     }
 
 })

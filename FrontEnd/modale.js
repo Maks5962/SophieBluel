@@ -122,6 +122,7 @@ function supprimerProjet(event, id) {
                     
                     /* Suppression de la vignette de la modale et de la page d'accueil */
                     supprimerAffichageProjet(id)
+                    modale.style.display = "none"
 
 
                 } else {
@@ -248,17 +249,10 @@ function modaleUploadDynamique() {
     const champTitre = document.getElementById("title")
     const champCategorie = document.getElementById("categorie")
 
-    champFichier.addEventListener("input", verifierChamps) // L'évenement "input", permet de détecter la modification immédiatement
-    champTitre.addEventListener("input", verifierChamps)
-    champCategorie.addEventListener("input", verifierChamps)
-
-    const formulaireAjout = document.querySelector("#formulaire-ajout");
-        
-        
     /* Fonction de vérification des champs */
-    function verifierChamps() {
+    const verifierChamps = () => {
 
-        if (champFichier.value !== '' && champTitre.value !== '' && champCategorie.value !== '') {
+        if (champFichier.value && champTitre.value && champCategorie.value) {
             
             /* Si tous les champs sont complétés, le bouton valider est activé et l'envoi du formulaire peut être réalisé */
             btnValider.style.backgroundColor = "#1D6154"
@@ -269,9 +263,14 @@ function modaleUploadDynamique() {
 
     }
 
-    /* On passe au traitement du formulaire, 
-    L'envoi, la récupération des données et le traitement pour l'ajout en base */
-    traitementFormulaire()
+    champFichier.addEventListener("input", verifierChamps) // L'évenement "input", permet de détecter la modification immédiatement
+    champTitre.addEventListener("input", verifierChamps)
+    champCategorie.addEventListener("input", verifierChamps)
+
+    const formulaireAjout = document.querySelector("#formulaire-ajout");
+        
+        
+    
 
     /* Ajout des catégories de manière dynamique */ 
     listeCategories(donneesAPI)
@@ -301,6 +300,10 @@ function listeCategories(donneesAPI) {
         /* Lance la boucle pour les intégrer dans la modale */
         const categorieModale = document.getElementById("categorie")
 
+        const optionDefault = document.createElement("option") // Choix vide
+        categorieModale.appendChild(optionDefault)
+
+
         for(let i=0; i<categoriesUnique.length; i++) {
             const optionModale = document.createElement("option")
             optionModale.value = categoriesUnique[i].id
@@ -317,119 +320,112 @@ function listeCategories(donneesAPI) {
 
 /* Fonction de traitement du formulaire, 
 Gestion de l'envoi */
-function traitementFormulaire() {
+
     const formulaireAjout = document.querySelector("#formulaire-ajout");
 
-    formulaireAjout.addEventListener("submit", function(event) {
+    formulaireAjout.addEventListener("submit", async (event) => {
         event.preventDefault();  // Empêche le rechargement de la page
-
         const formData = new FormData(formulaireAjout);
-
         // Récupère les valeurs du formulaire
         const image = formData.get("file");
         const title = formData.get("title");
         const categoryId = formData.get("categorie");
-
         // Vérification des champs avant envoi
         if (!image || !title || !categoryId) {
             console.error("Tous les champs ne sont pas remplis.");
             return;
         }
-
         // Supprime le champ "file" et ajoute le fichier en tant que "image"
         formData.delete("file");
-        formData.append("image", image) // Fichier image
-        formData.append("category", parseInt(categoryId))  // Catégorie convertie en entier
-        formData.delete("categorie") // Supprime categorie "IE" pour laisser place a category "Y"
-
-        // Envoi de la requête POST
-        fetch("http://localhost:5678/api/works", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${localStorage.getItem("authToken")}`,  // Token
-                "accept": "application/json"  // Attendre du JSON en réponse
-                // Content-Type, car FormData le gère automatiquement
-            },
-            body: formData  // Envoi du FormData
-        })
-        .then(reponse => {
-            if (!reponse.ok) {
-                if (reponse.status === 400) {
-                    throw new Error("Erreur 400: Requête mal formée.")
+        formData.append("image", image);  // Fichier image
+        formData.append("category", parseInt(categoryId));  // Catégorie convertie en entier
+        formData.delete("categorie");  // Supprime categorie "IE" pour laisser place à category "Y"
+        try {
+            // Envoi de la requête POST
+            const response = await fetch("http://localhost:5678/api/works", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem("authToken")}`,  // Token
+                    "accept": "application/json"  // Attendre du JSON en réponse
+                    // Content-Type n'est pas nécessaire avec FormData
+                },
+                body: formData  // Envoi du FormData
+            });
+            if (!response.ok) {
+                if (response.status === 400) {
+                    throw new Error("Erreur 400: Requête mal formée.");
+                } else if (response.status === 401) {
+                    throw new Error("Erreur 401: Non autorisé. Vérifiez le token.");
+                } else {
+                    throw new Error("Erreur lors de la soumission.");
                 }
-                if (reponse.status === 401) {
-                    throw new Error("Erreur 401: Non autorisé. Vérifiez le token.")
-                }
-                throw new Error("Erreur lors de la soumission.")
             }
-            return reponse.json()  // Convertit la réponse en JSON
-        })
-        .then(data => {
-            ajoutProjet(data) // Appel de la fonction pour afficher le nouveau projet au DOM (page accueil et modale)
-        })
-        .catch(error => {
-            console.error("Erreur:", error.message)
-        })
-    })
-}
+            const data = await response.json();  // Convertit la réponse en JSON
+            console.log("Succès:", data);  // Traitement du succès (à adapter selon besoin)
+
+            ajoutProjet(data)
+            
+        } catch (error) {
+            // Gestion des erreurs
+            console.error("Erreur:", error.message);
+        }
+        modale.style.display = "none"
+    });
 
 
-   
 /* Fonction d'ajout de projet à la page projet ainsi que sur la modale */
 function ajoutProjet(nouveauProjet) {
 
-/* Vide les champs du formulaire d'envoi */
-    initialiserUpload()
-
-
-    /* Affiche le projet sur la page projet   */
-    const divGallery = document.querySelector(".gallery") //Récupère le parent dans le DOM        
-
-    const figure = document.createElement("figure")
-    figure.dataset.idProjet = nouveauProjet.id
-    const image = document.createElement("img")
-    const figcaption = document.createElement("figcaption")
-
-    image.src = nouveauProjet.imageUrl
-    image.alt = nouveauProjet.title
-    figcaption.innerText = nouveauProjet.title
-
-    figure.appendChild(image)
-    figure.appendChild(figcaption)
-    divGallery.appendChild(figure) 
-
-
-    /* Affiche le projet dans la modale */
-    const divGalerieModale = document.querySelector(".galerie-modale")
-    // Création de la div
-    const divGalerieGrid = document.createElement("div")
-    divGalerieGrid.className = "galerie-grid"
-    divGalerieGrid.dataset.idProjetModale = nouveauProjet.id
-
-    // Création de la vignette
-    let imgGalerie = document.createElement("img")
-    imgGalerie.src = nouveauProjet.imageUrl
-    imgGalerie.alt = nouveauProjet.title
-    imgGalerie.dataset.id = nouveauProjet.id
-    imgGalerie.className = "img-galerie-grid"
-
-    // Création de la poubelle
-    let imgPoubelle = document.createElement("img")
-    imgPoubelle.src = "./assets/icons/poubelle.svg"
-    imgPoubelle.alt = "Supprimer"
-    imgPoubelle.dataset.id = nouveauProjet.id
-    imgPoubelle.className = "icone-supprimer"
-    imgPoubelle.onclick =  function(event) { 
-        event.preventDefault()
-        supprimerProjet(event, nouveauProjet.id) }
-
-    divGalerieGrid.appendChild(imgGalerie)
-    divGalerieGrid.appendChild(imgPoubelle)
-    divGalerieModale.appendChild(divGalerieGrid) 
-
-}
-
-
+    /* Vide les champs du formulaire d'envoi */
+        initialiserUpload()
+    
+    
+        /* Affiche le projet sur la page projet   */
+        const divGallery = document.querySelector(".gallery") //Récupère le parent dans le DOM        
+    
+        const figure = document.createElement("figure")
+        figure.dataset.idProjet = nouveauProjet.id
+        const image = document.createElement("img")
+        const figcaption = document.createElement("figcaption")
+    
+        image.src = nouveauProjet.imageUrl
+        image.alt = nouveauProjet.title
+        figcaption.innerText = nouveauProjet.title
+    
+        figure.appendChild(image)
+        figure.appendChild(figcaption)
+        divGallery.appendChild(figure) 
+    
+    
+        /* Affiche le projet dans la modale */
+        const divGalerieModale = document.querySelector(".galerie-modale")
+        // Création de la div
+        const divGalerieGrid = document.createElement("div")
+        divGalerieGrid.className = "galerie-grid"
+        divGalerieGrid.dataset.idProjetModale = nouveauProjet.id
+    
+        // Création de la vignette
+        let imgGalerie = document.createElement("img")
+        imgGalerie.src = nouveauProjet.imageUrl
+        imgGalerie.alt = nouveauProjet.title
+        imgGalerie.dataset.id = nouveauProjet.id
+        imgGalerie.className = "img-galerie-grid"
+    
+        // Création de la poubelle
+        let imgPoubelle = document.createElement("img")
+        imgPoubelle.src = "./assets/icons/poubelle.svg"
+        imgPoubelle.alt = "Supprimer"
+        imgPoubelle.dataset.id = nouveauProjet.id
+        imgPoubelle.className = "icone-supprimer"
+        imgPoubelle.onclick =  function(event) { 
+            event.preventDefault()
+            supprimerProjet(event, nouveauProjet.id) }
+    
+        divGalerieGrid.appendChild(imgGalerie)
+        divGalerieGrid.appendChild(imgPoubelle)
+        divGalerieModale.appendChild(divGalerieGrid) 
+    
+    }
 
 
 /* Ecoute du bouton "retour" depuis la modale pour changer l'affichage 
